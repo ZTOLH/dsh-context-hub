@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Context hub</title>
+  <rect width="64" height="64" rx="14" fill="#2563eb"/>
+  <path d="M12 15h10v31H12zM25 15h10v31H25z" fill="#fff"/>
+  <path d="M12 22h10M25 22h10M12 39h10M25 39h10" stroke="#2563eb" stroke-width="2"/>
+  <path d="M40 19h13a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4h-5l-7 6v-6h-1a4 4 0 0 1-4-4V23a4 4 0 0 1 4-4Z" fill="#bfdbfe"/>
+  <path d="M41 27h11M41 33h8M10 51h24" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+</svg>
