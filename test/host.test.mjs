@@ -77,6 +77,18 @@ test('combined host preserves legacy data, both injection modes, boundaries and 
     assert.equal(section.interpolate, false);
     assert.equal(section.text(), promptConfig.text);
     assert.deepEqual((await call('prompt-manager', 'state')).value.config, promptConfig);
+    assert.deepEqual((await call('prompt-manager', 'snapshots')).value.snapshots, []);
+    const createdSnapshot = await call('prompt-manager', 'snapshot', { name: 'Before edits', revision: 7 });
+    assert.equal(createdSnapshot.status, 201);
+    assert.equal(createdSnapshot.value.snapshot.name, 'Before edits');
+    assert.equal(createdSnapshot.value.snapshot.bytes, Buffer.byteLength(promptConfig.text));
+    const snapshotRead = await call('prompt-manager', 'snapshot-read', { id: createdSnapshot.value.snapshot.id });
+    assert.equal(snapshotRead.value.config.text, promptConfig.text);
+    assert.equal(snapshotRead.value.config.revision, 7);
+    assert.match(readFileSync(join(home, 'prompt-manager', 'snapshots.json'), 'utf8'), /Existing prompt/);
+    assert.equal((await call('prompt-manager', 'snapshot', { name: 'stale', revision: 6 })).status, 409);
+    assert.equal((await call('prompt-manager', 'snapshot', { name: '   ', revision: 7 })).status, 400);
+    assert.equal((await call('prompt-manager', 'snapshot', { name: 'bad\nname', revision: 7 })).status, 400);
     assert.equal((await call('resource-library', 'state')).value.config.resources.length, 2);
     assert.deepEqual(readFileSync(join(home, 'resource-library', 'config.json')), originalResourceBytes, 'mount does not rewrite existing resource data');
     assert.deepEqual(readFileSync(join(home, 'prompt-manager', 'config.json')), originalPromptBytes, 'mount does not rewrite existing prompt data');
@@ -114,9 +126,16 @@ test('combined host preserves legacy data, both injection modes, boundaries and 
     assert.equal((await call('prompt-manager', 'save', { revision: 8, config: { enabled: true, text: max + 'x', format: 'md', fileName: 'prompt.md' } })).status, 413);
     assert.equal((await call('prompt-manager', 'save', { revision: 7, config: { enabled: true, text: 'stale', format: 'manual', fileName: '' } })).status, 409);
     assert.equal((await call('prompt-manager', 'save', { revision: 8, config: { enabled: true, text: 'bad', format: 'md', fileName: 'prompt.txt' } })).status, 400);
-    await call('prompt-manager', 'save', { revision: 8, config: { enabled: false, text: 'retained', format: 'manual', fileName: '' } });
+    const afterBoundary = await call('prompt-manager', 'state');
+    const restoreResult = await call('prompt-manager', 'restore', { id: createdSnapshot.value.snapshot.id, revision: afterBoundary.value.config.revision });
+    assert.equal(restoreResult.status, 200);
+    assert.equal(restoreResult.value.config.text, promptConfig.text);
+    assert.equal(restoreResult.value.config.revision, afterBoundary.value.config.revision + 1);
+    assert.equal(section.text(), promptConfig.text, 'restoring a snapshot updates live prompt injection');
+    assert.equal((await call('prompt-manager', 'restore', { id: 'missing', revision: restoreResult.value.config.revision })).status, 404);
+    await call('prompt-manager', 'save', { revision: restoreResult.value.config.revision, config: { enabled: false, text: 'retained', format: 'manual', fileName: '' } });
     assert.equal(section.text(), '');
-    await call('prompt-manager', 'save', { revision: 9, config: { enabled: true, text: 'RESTORED {{literal}}', format: 'manual', fileName: '' } });
+    await call('prompt-manager', 'save', { revision: restoreResult.value.config.revision + 1, config: { enabled: true, text: 'RESTORED {{literal}}', format: 'manual', fileName: '' } });
     assert.equal(section.text(), 'RESTORED {{literal}}');
     await call('resource-library', 'save', { config: { ...resourceConfig, enabled: false } });
     assert.equal(context.text(), '');
@@ -139,7 +158,9 @@ test('combined host preserves legacy data, both injection modes, boundaries and 
     restarted = runtime([{ ctx: new Scope() }]); apply(restarted.ctx);
     assert.equal([...restarted.ctx.sections][0].text(), 'RESTORED {{literal}}');
     assert.equal((await restarted.call('resource-library', 'state')).value.config.resources[0].name, '中文😀资料');
-    assert.equal((await restarted.call('prompt-manager', 'state')).value.config.revision, 10);
+    assert.equal((await restarted.call('prompt-manager', 'state')).value.config.revision, 11);
+    assert.equal((await restarted.call('prompt-manager', 'snapshots')).value.snapshots.length, 1, 'snapshots persist across restart');
+    assert.equal((await restarted.call('prompt-manager', 'snapshot-read', { id: createdSnapshot.value.snapshot.id })).value.config.text, promptConfig.text);
   } finally {
     await ctx.dispose(); await restarted?.ctx.dispose();
     if (previousHome === undefined) delete process.env.DSH_HOME; else process.env.DSH_HOME = previousHome;

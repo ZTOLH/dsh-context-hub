@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+- 新增提示词快照：可为已保存提示词创建命名快照、预览历史内容，并按当前 revision 校验后恢复。
+- 快照与活动提示词配置分开保存在 `${DSH_HOME||~/.dsh}/prompt-manager/snapshots.json`，最多 100 个；创建快照不修改活动提示词。
+
 ## 1.0.0
 
 - 首个版本：合并 `dsh-resource-library` 与 `dsh-prompt-manager` 为单一插件 `dsh-context-hub`。

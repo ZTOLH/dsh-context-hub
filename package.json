@@ -1,6 +1,6 @@
 {
   "name": "dsh-context-hub",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "资料库与提示词管理：统一管理检索资料和系统提示词",
   "license": "MIT",
   "author": "DSH Community",
