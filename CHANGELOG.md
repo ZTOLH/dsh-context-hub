@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1
+
+- 放大并强化资料库「添加资源」主按钮，在空状态也提供明显入口。
+- 在资源表单路径下增加「选择文件或文件夹」快捷入口，直达现有主机路径浏览器。
+- Enlarge and emphasize the Resource Library add button, including an empty-state call to action.
+- Add a prominent “Choose file or folder” shortcut to the existing host-path browser.
+
 ## 1.2.0
 
 - 优化新手引导：资料库和提示词页提供清晰的起步步骤与默认建议，并说明提示词需保存后才应用。

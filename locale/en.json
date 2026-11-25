@@ -13,6 +13,7 @@
     "add": "Add",
     "edit": "Edit resource",
     "addNew": "Add resource",
+    "chooseFileOrFolder": "Choose file or folder",
     "name": "Resource name",
     "namePlaceholder": "e.g. API documentation",
     "path": "Path",
