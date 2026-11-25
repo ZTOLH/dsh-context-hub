@@ -2,6 +2,12 @@
 
 A standalone DSH plugin combining the Resource library and Prompt manager in one panel, opened from **Sidebar → More → Context hub**. It keeps the two feature APIs and data files separate so an existing installation can be switched without data conversion.
 
+## 1.2.0
+
+The panel now gives first-time users a short guided path. Optional filtering, budgets, test tools, and snapshot history can be expanded when needed; all existing settings and data remain compatible.
+
+面板新增首次使用引导。文件筛选、预算、测试工具和快照历史按需展开，原有设置与数据格式保持兼容。
+
 ## Features / 功能
 
 - **Resource library / 资料库**: select files or folders, configure file filters and choose between reading on every AI request or when keywords match. Text files are bounded per resource and in total.
