@@ -2,6 +2,12 @@
 
 A standalone DSH plugin combining the Resource library and Prompt manager in one panel, opened from **Sidebar → More → Context hub**. It keeps the two feature APIs and data files separate so an existing installation can be switched without data conversion.
 
+## 1.2.1
+
+The Resource Library add action is larger and clearer, and the empty state offers a direct call to action. The resource form also has a prominent shortcut to the existing host file/folder browser.
+
+资料库的「添加资源」按钮已放大并明确用途，空状态也提供直接入口；资源表单新增醒目的文件/文件夹浏览快捷入口。
+
 ## 1.2.0
 
 The panel now gives first-time users a short guided path. Optional filtering, budgets, test tools, and snapshot history can be expanded when needed; all existing settings and data remain compatible.
